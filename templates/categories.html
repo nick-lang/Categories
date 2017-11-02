@@ -1,0 +1,6 @@
+{% for i in categories %}
+<a href='{{url_for('ListBooks', category_id = i.id) }}'>
+  {{i.name}}
+</a>
+</br>
+{% endfor %}

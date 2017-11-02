@@ -2,10 +2,10 @@ import psycopg2
 
 DBNAME = "catalog"
 
-def get_books():
+def get_books(category_id):
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    c.execute("select name, description from books order by name")
+    c.execute("select name, description from books order by name;")
     return c.fetchall()
     db.close()
 

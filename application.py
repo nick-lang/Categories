@@ -1,5 +1,7 @@
-from flask import Flask
+from flask import Flask, render_template, request, url_for
 app = Flask(__name__)
+
+from flask import render_template
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -13,34 +15,30 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 @app.route('/')
-@app.route('/home/')
-def Home():
-    return "Home"
-
 @app.route('/categories/')
 def ListCategories():
     categories = session.query(Categories).all()
-    output = ''
-    for i in categories:
-        output += i.name
-        output += '</br>'
-    return output
+    return render_template('categories.html', categories = categories)
 
 @app.route('/categories/<int:category_id>/')
 def ListBooks(category_id):
-    books = get_books()
-    output = ''
-    for i in books:
-        output += i.name
-        output += '</br>'
-        output += i.description
-        output += '</br>'
-    return output
+    books = session.query(Books).filter_by(category_id = category_id).all()
+    return render_template('books.html', books = books,
+                                         category_id = category_id)
 
-@app.route('/categories/<int:category_id>/new/')
+@app.route('/categories/<int:category_id>/new/', methods =['GET','POST'])
 def newBook(category_id):
-    output = 'new book'
-    return output
+    if request.method == 'POST':
+        newItem = Books(name = request.form['name'],
+                        description = request.form['description'],
+                        category_id = category_id)
+        session.add(newItem)
+        session.commit()
+        categories = session.query(Categories).all()
+        return render_template('categories.html', categories = categories)
+    else:
+        category = session.query(Categories).filter_by(id = category_id).one()
+        return render_template('newBook.html', category = category)
 
 @app.route('/categories/<int:category_id>/<int:book_id>/edit/')
 def editBook(category_id, book_id):
