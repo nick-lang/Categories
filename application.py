@@ -6,7 +6,6 @@ from flask import render_template
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Categories, Books
-from catalogdb import get_books, add_book
 
 engine = create_engine('sqlite:///catalog.db')
 Base.metadata.create_all(engine)
