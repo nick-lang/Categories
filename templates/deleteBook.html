@@ -1,0 +1,6 @@
+Permanantly delete {{book.name}}?
+</br>
+<form action="{{url_for('deleteBook', category_id = category_id,
+                                      book_id = book.id) }}" method = 'post'>
+  <input type = 'submit', value = 'Delete'>
+</form>

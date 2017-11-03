@@ -59,15 +59,20 @@ def editBook(category_id, book_id):
         return render_template('editBook.html', book = editedBook,
                                                 category_id = category_id)
 
-@app.route('/categories/<int:category_id>/<int:book_id>/delete/')
+@app.route('/categories/<int:category_id>/<int:book_id>/delete/',
+           methods =['GET','POST'])
 def deleteBook(category_id, book_id):
     bookToDelete = session.query(Books).filter_by(id = book_id).one()
-    session.delete(bookToDelete)
-    session.commit()
-    # Get books for render of listBooks
-    books = session.query(Books).filter_by(category_id = category_id).all()
-    return render_template('books.html', books = books,
-                                         category_id = category_id)
+    if request.method == 'POST':
+        session.delete(bookToDelete)
+        session.commit()
+        # Get books for render of listBooks
+        books = session.query(Books).filter_by(category_id = category_id).all()
+        return render_template('books.html', books = books,
+                                             category_id = category_id)
+    else:
+        return render_template('deleteBook.html', book = bookToDelete,
+                                                  category_id = category_id)
 
 if __name__ == '__main__':
     app.debug = True
