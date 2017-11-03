@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for
 app = Flask(__name__)
 
 from flask import render_template
@@ -33,8 +33,9 @@ def newBook(category_id):
                         category_id = category_id)
         session.add(newItem)
         session.commit()
-        categories = session.query(Categories).all()
-        return render_template('categories.html', categories = categories)
+        books = session.query(Books).filter_by(category_id = category_id).all()
+        return render_template('books.html', books = books,
+                                             category_id = category_id)
     else:
         category = session.query(Categories).filter_by(id = category_id).one()
         return render_template('newBook.html', category = category)
@@ -50,7 +51,7 @@ def editBook(category_id, book_id):
             editedBook.description = request.form['description']
         session.add(editedBook)
         session.commit()
-        # Get books for redirect to listBooks
+        # Get books for render of listBooks
         books = session.query(Books).filter_by(category_id = category_id).all()
         return render_template('books.html', books = books,
                                              category_id = category_id)
@@ -60,8 +61,13 @@ def editBook(category_id, book_id):
 
 @app.route('/categories/<int:category_id>/<int:book_id>/delete/')
 def deleteBook(category_id, book_id):
-    output = 'delete'
-    return output
+    bookToDelete = session.query(Books).filter_by(id = book_id).one()
+    session.delete(bookToDelete)
+    session.commit()
+    # Get books for render of listBooks
+    books = session.query(Books).filter_by(category_id = category_id).all()
+    return render_template('books.html', books = books,
+                                         category_id = category_id)
 
 if __name__ == '__main__':
     app.debug = True
