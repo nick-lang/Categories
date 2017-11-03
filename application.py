@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, request, url_for, jsonify
 app = Flask(__name__)
 
 from flask import render_template
@@ -73,6 +73,11 @@ def deleteBook(category_id, book_id):
     else:
         return render_template('deleteBook.html', book = bookToDelete,
                                                   category_id = category_id)
+
+@app.route('/categories/<int:category_id>/JSON/')
+def listBooksJSON(category_id):
+    books = session.query(Books).filter_by(category_id = category_id).all()
+    return jsonify(Books=[i.serialize for i in books])
 
 if __name__ == '__main__':
     app.debug = True

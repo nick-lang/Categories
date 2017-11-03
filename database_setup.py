@@ -11,7 +11,6 @@ class Categories(Base):
     name = Column(String(100), nullable = False)
     id = Column(Integer, primary_key = True)
 
-
 class Books(Base):
     __tablename__ = 'books'
 
@@ -21,6 +20,14 @@ class Books(Base):
     user_association = Column(String(100))
     category_id = Column(Integer, ForeignKey('categories.id'), nullable = False)
     categories = relationship(Categories)
+
+    @property
+    def serialize(self):
+        return {
+            'name' : self.name,
+            'description' : self.description,
+            'id' : self.id,
+        }
 
 engine = create_engine('sqlite:///catalog.db')
 Base.metadata.create_all(engine)
