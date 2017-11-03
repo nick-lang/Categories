@@ -1,5 +1,13 @@
-{{book.name}}
+Edit {{book.name}}:
 </br>
-{{book.description}}
-</br>
-{{category_id}}
+<form action="{{url_for('editBook', category_id = category_id,
+                                    book_id = book.id) }}" method = 'post'>
+  <p>Name:</p>
+  <input type = 'text' size = '30' name = 'name' placeholder = '{{book.name}}'>
+  </br>
+  <p>Description:</p>
+  <textarea rows = '5' cols = '50' name = 'description'
+            placeholder = '{{book.description}}'></textarea>
+  </br>
+  <input type = 'submit' value = 'Submit Edit'>
+</form>
