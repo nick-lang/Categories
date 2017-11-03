@@ -1,5 +1,5 @@
 {% for i in categories %}
-<a href='{{url_for('ListBooks', category_id = i.id) }}'>
+<a href='{{url_for('listBooks', category_id = i.id) }}'>
   {{i.name}}
 </a>
 </br>

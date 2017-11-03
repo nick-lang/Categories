@@ -1,11 +1,13 @@
-{{category_id}}
-</br>
 {% for i in books %}
-{{i.name}}
-</br>
-{{i.description}}
-</br>
-</br>
+<p>
+  {{i.name}}
+  </br>
+  {{i.description}}
+  </br>
+  <a href='{{url_for('editBook', book_id = i.id, category_id = category_id) }}'>
+    Edit
+  </a>
+</p>
 {% endfor %}
 <a href='{{url_for('newBook', category_id = category_id) }}'>
   Add Book

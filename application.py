@@ -15,17 +15,17 @@ session = DBSession()
 
 @app.route('/')
 @app.route('/categories/')
-def ListCategories():
+def listCategories():
     categories = session.query(Categories).all()
     return render_template('categories.html', categories = categories)
 
 @app.route('/categories/<int:category_id>/')
-def ListBooks(category_id):
+def listBooks(category_id):
     books = session.query(Books).filter_by(category_id = category_id).all()
     return render_template('books.html', books = books,
                                          category_id = category_id)
 
-@app.route('/categories/<int:category_id>/new/', methods =['GET','POST'])
+@app.route('/categories/<int:category_id>/new/', methods = ['GET','POST'])
 def newBook(category_id):
     if request.method == 'POST':
         newItem = Books(name = request.form['name'],
@@ -39,10 +39,24 @@ def newBook(category_id):
         category = session.query(Categories).filter_by(id = category_id).one()
         return render_template('newBook.html', category = category)
 
-@app.route('/categories/<int:category_id>/<int:book_id>/edit/')
+@app.route('/categories/<int:category_id>/<int:book_id>/edit/',
+           methods =['GET','POST'])
 def editBook(category_id, book_id):
-    output = 'edit'
-    return output
+    editedBook = session.query(Books).filter_by(id = book_id).one()
+    if request.method == 'POST':
+        if request.form['name']:
+            editedBook.name = request.form['name']
+        if request.form['description']:
+            editedBook.description = request.form['description']
+        session.add(editedBook)
+        session.commit()
+        # Get books for redirect to listBooks
+        books = session.query(Books).filter_by(category_id = category_id).all()
+        return redirect(url_for('books.html', books = books,
+                                              category_id = category_id))
+    else:
+        return render_template('editBook.html', book = editedBook,
+                                                category_id = category_id)
 
 @app.route('/categories/<int:category_id>/<int:book_id>/delete/')
 def deleteBook(category_id, book_id):
