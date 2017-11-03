@@ -52,8 +52,8 @@ def editBook(category_id, book_id):
         session.commit()
         # Get books for redirect to listBooks
         books = session.query(Books).filter_by(category_id = category_id).all()
-        return redirect(url_for('listBooks', books = books,
-                                           category_id = category_id))
+        return render_template('books.html', books = books,
+                                             category_id = category_id)
     else:
         return render_template('editBook.html', book = editedBook,
                                                 category_id = category_id)
