@@ -37,6 +37,8 @@ def listBooks(category_id):
 
 @app.route('/categories/<int:category_id>/new/', methods = ['GET','POST'])
 def newBook(category_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         newItem = Books(name = request.form['name'],
                         description = request.form['description'],
@@ -53,6 +55,8 @@ def newBook(category_id):
 @app.route('/categories/<int:category_id>/<int:book_id>/edit/',
            methods =['GET','POST'])
 def editBook(category_id, book_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     editedBook = session.query(Books).filter_by(id = book_id).one()
     if request.method == 'POST':
         if request.form['name']:
@@ -72,6 +76,8 @@ def editBook(category_id, book_id):
 @app.route('/categories/<int:category_id>/<int:book_id>/delete/',
            methods =['GET','POST'])
 def deleteBook(category_id, book_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     bookToDelete = session.query(Books).filter_by(id = book_id).one()
     if request.method == 'POST':
         session.delete(bookToDelete)
